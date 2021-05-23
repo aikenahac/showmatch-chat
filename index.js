@@ -16,7 +16,8 @@ socketio.on("connection", (userSocket) => {
 
 	userSocket.on("disconnect", (data) => {
 		console.log(data);
-		userSocket.broadcast.emit("receive_message", data.user)
+		let message = "User has left the chat."
+		userSocket.broadcast.emit("receive_message", message)
 	})
 	userSocket.on("send_message", (data) => {
 		console.log(data);
