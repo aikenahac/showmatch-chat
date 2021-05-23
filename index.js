@@ -1,9 +1,7 @@
-const express = require("express");
-
 const dotenv = require("dotenv");
 dotenv.config();
 
-const InitiateMongoServer = require("./config/db");
+// const InitiateMongoServer = require("./config/db");
 
 const socketio = require('socket.io')();
 
@@ -26,6 +24,4 @@ socketio.on("connection", (userSocket) => {
 	})
 })
 
-socketio.listen(PORT).then(() => {
-	console.log(`Socket open @ port ${PORT}`);
-});
+socketio.listen(PORT);
