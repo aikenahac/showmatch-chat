@@ -3,26 +3,43 @@ dotenv.config();
 
 // const InitiateMongoServer = require("./config/db");
 
-const socketio = require('socket.io')();
-
 // PORT
 const PORT = process.env.PORT || 3001;
 
 // Initiate Mongo Servers
 // InitiateMongoServer().then(r => console.log("Mongo initiated"));
 
-socketio.on("connection", (userSocket) => {
-	console.log("A user connected.")
+const app = require('express')()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http);
 
-	userSocket.on("disconnect", (data) => {
-		console.log(data);
-		let message = "User has left the chat."
-		userSocket.broadcast.emit("receive_message", message)
-	})
-	userSocket.on("send_message", (data) => {
-		console.log(data);
-		userSocket.broadcast.emit("receive_message", data)
-	})
+app.get('/', (req, res) => {
+	res.send("Chat app up.")
 })
 
-socketio.listen(PORT);
+io.on('connection', socket => {
+	//Get the chatID of the user and join in a room of the same chatID
+	chatID = socket.handshake.query.chatID
+	socket.join(chatID)
+
+	//Leave the room if the user closes the socket
+	socket.on('disconnect', () => {
+		socket.leave(chatID)
+	})
+
+	//Send message to only a particular user
+	socket.on('send_message', message => {
+		receiverChatID = message.receiverChatID
+		senderChatID = message.senderChatID
+		content = message.content
+
+		//Send message to only that particular room
+		socket.in(receiverChatID).emit('receive_message', {
+			'content': content,
+			'senderChatID': senderChatID,
+			'receiverChatID':receiverChatID,
+		})
+	})
+});
+
+http.listen(PORT);
