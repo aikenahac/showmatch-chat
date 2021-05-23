@@ -3,26 +3,26 @@ dotenv.config();
 
 // const InitiateMongoServer = require("./config/db");
 
-const socketio = require('socket.io')();
-
 // PORT
 const PORT = process.env.PORT || 3001;
+
+const app = require('express')()
+const http = require('http').createServer(app)
+
+//Socket Logic
+const socketio = require('socket.io')(http)
 
 // Initiate Mongo Servers
 // InitiateMongoServer().then(r => console.log("Mongo initiated"));
 
-socketio.on("connection", (userSocket) => {
-	console.log("A user connected.")
+app.get('/', (req, res) => {
+	res.send("Chat server running")
+})
 
-	userSocket.on("disconnect", (data) => {
-		console.log(data);
-		let message = "User has left the chat."
-		userSocket.broadcast.emit("receive_message", message)
-	})
+socketio.on("connection", (userSocket) => {
 	userSocket.on("send_message", (data) => {
-		console.log(data);
 		userSocket.broadcast.emit("receive_message", data)
 	})
 })
 
-socketio.listen(PORT);
+http.listen(PORT);
