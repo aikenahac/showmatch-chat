@@ -1,24 +1,16 @@
+// Initiate Mongo Server
+// const InitiateMongoServer = require("./config/db");
+// InitiateMongoServer().then(r => console.log("Mongo initiated"));
+
 const app = require('express')()
 const http = require('http').createServer(app)
 
+app.get('/', (req, res) => {
+	res.send("ShowMatch chat up!")
+})
+
 //Socket Logic
 const socketio = require('socket.io')(http)
-
-const dotenv = require("dotenv");
-dotenv.config();
-
-// const InitiateMongoServer = require("./config/db");
-
-// PORT
-const PORT = process.env.PORT || 3001;
-
-// Initiate Mongo Servers
-// InitiateMongoServer().then(r => console.log("Mongo initiated"));
-
-
-app.get('/', (req, res) => {
-	res.send("ShowMatch chat running!")
-})
 
 socketio.on("connection", (socket) => {
 	console.log("Someone connected to socket!");
@@ -35,8 +27,4 @@ socketio.on("connection", (socket) => {
 	})
 })
 
-http.listen(PORT, () => {
-	console.log("ShowMatch chat started!");
-});
-
-
+http.listen(process.env.PORT)
