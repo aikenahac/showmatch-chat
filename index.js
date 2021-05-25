@@ -25,10 +25,13 @@ socketio.on("connection", (userSocket) => {
 		console.log(`Message: ${data}`);
 
 		const author = "anonymous";
+		const content = data;
+
+		console.log(data);
 
 		let msg = new Message({
 			author,
-			data
+			content
 		})
 
 		userSocket.broadcast.emit("receive_message", data);
