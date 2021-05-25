@@ -7,9 +7,6 @@ const Message = require("./model/Message");
 const app = require('express')()
 const http = require('http').createServer(app)
 
-
-
-
 app.get('/', (req, res) => {
 	res.send("ShowMatch chat is up!")
 })
@@ -24,7 +21,7 @@ socketio.on("connection", (userSocket) => {
 	userSocket.on("send_message", async (data) => {
 		console.log(`Message: ${data}`);
 
-		const author = "anonymous";
+		const author = data.author;
 		const content = data.message;
 
 		console.log(data);
