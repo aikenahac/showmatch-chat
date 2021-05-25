@@ -25,7 +25,7 @@ socketio.on("connection", (userSocket) => {
 		console.log(`Message: ${data}`);
 
 		const author = "anonymous";
-		const content = data;
+		const content = data.message;
 
 		console.log(data);
 
